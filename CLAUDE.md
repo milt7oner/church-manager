@@ -15,7 +15,7 @@ Everything in the repository is written in English: code, identifiers, comments,
 documentation, ADRs, commit messages, branch names and pull requests.
 User-facing UI text is the only exception and will live in translation files.
 
-## Current state (verified: 2026-10-06)
+## Current state (verified: 2026-10-07)
 
 - Next.js 16.3.6 (App Router) + React 19.2.8 + TypeScript + Tailwind v4.
   Read `node_modules/next/dist/docs/` before writing Next.js code: your training data
@@ -29,6 +29,8 @@ User-facing UI text is the only exception and will live in translation files.
   `.prettierignore` excludes `pnpm-lock.yaml` and `supabase/.temp`; root `.gitignore`
   entries are ignored too. `eslint-config-prettier` turns off ESLint stylistic rules.
 - `.gitattributes` enforces LF line endings (`* text=auto eol=lf`) for every platform.
+- Vitest with default options (no config file). Tests live next to the code they test
+  as `*.test.ts`. Today: `src/domain/person.test.ts`.
 
 Current structure:
 
@@ -44,13 +46,14 @@ Current structure:
 - `pnpm typecheck` — `tsc --noEmit`
 - `pnpm format` — Prettier, rewrites files
 - `pnpm format:check` — Prettier, verifies only (no writes)
+- `pnpm test` — Vitest, single run
+- `pnpm test:watch` — Vitest, watch mode
 - `pnpm supabase start` / `pnpm supabase stop` — local Supabase (requires Docker)
-
-Pending (it does NOT exist yet; do not run or invent it): `pnpm test`.
 
 ## Working rules
 
-- Before calling a task done: `pnpm lint`, `pnpm typecheck` and `pnpm format:check` must pass.
+- Before calling a task done: `pnpm lint`, `pnpm typecheck`, `pnpm format:check` and
+  `pnpm test` must pass.
   If a command does not exist or fails because of configuration, report it; do not
   "fix" it by changing the check.
 - Never modify verification scripts, TypeScript/ESLint config or tests to make something
@@ -64,6 +67,9 @@ Pending (it does NOT exist yet; do not run or invent it): `pnpm test`.
   (main is protected on GitHub).
 - If you change the structure, the commands or the state of the repo, update this file
   in the same PR.
+- Tests in `src/domain/` are the executable spec of business rules. Never change
+  an expected value to make a test pass. If a test and the code disagree, stop
+  and report which one you believe is wrong and why.
 
 ## Architecture
 

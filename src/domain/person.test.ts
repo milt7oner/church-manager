@@ -104,6 +104,11 @@ describe("isPersonStatus", () => {
     ["undefined", undefined],
     ["a number", 1],
     ["an object", { status: "member" }],
+    // Catches a lookup like `value in table`: these keys exist on every object.
+    ["an Object.prototype key", "constructor"],
+    ["__proto__", "__proto__"],
+    // Catches string coercion (`==` or String(value)): ["member"] coerces to "member".
+    ["a single-element array", ["member"]],
   ])("rejects %s", (_label, value) => {
     expect(isPersonStatus(value)).toBe(false);
   });

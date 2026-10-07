@@ -67,6 +67,9 @@ Current structure:
   (main is protected on GitHub).
 - If you change the structure, the commands or the state of the repo, update this file
   in the same PR.
+- Tests in `src/domain/` are the executable spec of business rules. Never change
+  an expected value to make a test pass. If a test and the code disagree, stop
+  and report which one you believe is wrong and why.
 
 ## Architecture
 

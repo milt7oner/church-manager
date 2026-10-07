@@ -32,9 +32,15 @@
  *   both copies in sync (tests that compare them).
  */
 
-export const PERSON_STATUSES = ["visitor", "new", "in_process", "member", "leader"] as const
+export const PERSON_STATUSES = [
+  "visitor",
+  "new",
+  "in_process",
+  "member",
+  "leader",
+] as const;
 
-export type PersonStatus = (typeof PERSON_STATUSES)[number]
+export type PersonStatus = (typeof PERSON_STATUSES)[number];
 
 /**
  * Allowed transitions: each key is a state and its list holds the outgoing arrows.
@@ -47,14 +53,14 @@ const ALLOWED_TRANSITIONS: Record<PersonStatus, readonly PersonStatus[]> = {
   in_process: ["member"],
   member: ["leader"],
   leader: ["member"],
-}
+};
 
 /** Boundary guard: turns an unknown value (e.g. from Supabase) into a valid status. */
 export function isPersonStatus(value: unknown): value is PersonStatus {
-  return PERSON_STATUSES.some((status) => status === value)
+  return PERSON_STATUSES.some((status) => status === value);
 }
 
 /** Is there an arrow from `from` to `to`? Pure: knows nothing about the person or the user. */
 export function canTransition(from: PersonStatus, to: PersonStatus): boolean {
-  return ALLOWED_TRANSITIONS[from].includes(to)
+  return ALLOWED_TRANSITIONS[from].includes(to);
 }

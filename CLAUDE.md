@@ -27,6 +27,7 @@ User-facing UI text is the only exception and will live in translation files.
   There are NO migrations, tables or Supabase client in the code yet.
 
 Current structure:
+
 - `src/app/` — App Router routes. Today only the scaffold: layout and home page.
 - `src/domain/` — pure business rules. Today: `person.ts` (PersonStatus, canTransition).
 - `docs/adr/` — architecture decisions. Read them before structural changes.

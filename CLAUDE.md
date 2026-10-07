@@ -15,7 +15,7 @@ Everything in the repository is written in English: code, identifiers, comments,
 documentation, ADRs, commit messages, branch names and pull requests.
 User-facing UI text is the only exception and will live in translation files.
 
-## Current state (verified: 2026-10-05)
+## Current state (verified: 2026-10-06)
 
 - Next.js 16.3.6 (App Router) + React 19.2.8 + TypeScript + Tailwind v4.
   Read `node_modules/next/dist/docs/` before writing Next.js code: your training data
@@ -25,6 +25,10 @@ User-facing UI text is the only exception and will live in translation files.
 - TypeScript: `strict` + `noUncheckedIndexedAccess`. Alias `@/*` → `./src/*`.
 - Supabase: CLI installed as a dev dependency. `supabase/config.toml` exists.
   There are NO migrations, tables or Supabase client in the code yet.
+- Prettier 3 (exact version pinned) with default options: `.prettierrc.json` is `{}`.
+  `.prettierignore` excludes `pnpm-lock.yaml` and `supabase/.temp`; root `.gitignore`
+  entries are ignored too. `eslint-config-prettier` turns off ESLint stylistic rules.
+- `.gitattributes` enforces LF line endings (`* text=auto eol=lf`) for every platform.
 
 Current structure:
 
@@ -38,13 +42,15 @@ Current structure:
 - `pnpm dev` · `pnpm build` · `pnpm start`
 - `pnpm lint` — ESLint
 - `pnpm typecheck` — `tsc --noEmit`
+- `pnpm format` — Prettier, rewrites files
+- `pnpm format:check` — Prettier, verifies only (no writes)
 - `pnpm supabase start` / `pnpm supabase stop` — local Supabase (requires Docker)
 
-Pending (they do NOT exist yet; do not run or invent them): `pnpm format`, `pnpm test`.
+Pending (it does NOT exist yet; do not run or invent it): `pnpm test`.
 
 ## Working rules
 
-- Before calling a task done: `pnpm lint` and `pnpm typecheck` must pass.
+- Before calling a task done: `pnpm lint`, `pnpm typecheck` and `pnpm format:check` must pass.
   If a command does not exist or fails because of configuration, report it; do not
   "fix" it by changing the check.
 - Never modify verification scripts, TypeScript/ESLint config or tests to make something

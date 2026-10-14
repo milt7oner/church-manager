@@ -15,7 +15,7 @@ Everything in the repository is written in English: code, identifiers, comments,
 documentation, ADRs, commit messages, branch names and pull requests.
 User-facing UI text is the only exception and will live in translation files.
 
-## Current state (verified: 2026-10-07)
+## Current state (verified: 2026-13-10)
 
 - Next.js 16.3.6 (App Router) + React 19.2.8 + TypeScript + Tailwind v4.
   Read `node_modules/next/dist/docs/` before writing Next.js code: your training data
@@ -25,6 +25,7 @@ User-facing UI text is the only exception and will live in translation files.
 - TypeScript: `strict` + `noUncheckedIndexedAccess`. Alias `@/*` → `./src/*`.
 - Supabase: CLI installed as a dev dependency. `supabase/config.toml` exists.
   There are NO migrations, tables or Supabase client in the code yet.
+- Local Supabase runs with pnpm supabase start (Docker). Env vars live in .env.local (git-ignored); .env.example lists the required names.
 - Prettier 3 (exact version pinned) with default options: `.prettierrc.json` is `{}`.
   `.prettierignore` excludes `pnpm-lock.yaml` and `supabase/.temp`; root `.gitignore`
   entries are ignored too. `eslint-config-prettier` turns off ESLint stylistic rules.
@@ -95,8 +96,12 @@ Accepted decisions live in `docs/adr/`. Summary:
   that creates it, together with its policies.
 - Authorization is resolved in the database (RLS + `user_roles.scope_church_id`).
   A UI check is UX, not security.
-- The `service_role` key never appears in client code or in `NEXT_PUBLIC_` variables.
-  Server code only, and only when RLS cannot express the rule.
+- Supabase keys: the publishable key (formerly anon) is browser-safe and subject
+  to RLS. The secret key (formerly service_role) bypasses RLS: never in client
+  code, never in a `NEXT_PUBLIC_` variable, and only read inside modules that
+  start with `import "server-only"`.
+- A non-`NEXT_PUBLIC_` variable is NOT safe just because of its name: if a client
+  component reads it, its value can be rendered into the server-generated HTML.
 - Schema changes only through `supabase/migrations/`. Never in the production dashboard.
 - Never commit `.env*` files with real values.
 - Every edit or reversal in `financial_entries` is recorded in `audit_log`.
